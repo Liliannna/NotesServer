@@ -31,7 +31,9 @@ public class Validator {
     public void registrationUser(UserRegistrationDtoRequest request) {
         validateName(request.getFirstName());
         validateName(request.getLastName());
-        validateName(request.getPatronymic());
+        if(request.getPatronymic() != null){
+            validateName(request.getPatronymic());
+        }
         validateLogin(request.getLogin());
         validatePassword(request.getPassword());
     }

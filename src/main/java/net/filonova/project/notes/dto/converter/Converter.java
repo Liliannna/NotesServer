@@ -1,4 +1,4 @@
-package net.filonova.project.notes.utils;
+package net.filonova.project.notes.dto.converter;
 
 import net.filonova.project.notes.exception.NotesException;
 import net.filonova.project.notes.model.User;
@@ -22,7 +22,7 @@ public class Converter {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPatronymic(request.getPatronymic());
-        user.setDatetimeRegistration(getDateTime());
+        user.setRegistration(getDateTime());
         return user;
     }
 
@@ -41,7 +41,7 @@ public class Converter {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPatronymic(request.getPatronymic());
-        user.setDatetimeRegistration(getDateTime());
+        user.setRegistration(getDateTime());
         return user;
     }
 

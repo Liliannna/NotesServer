@@ -4,13 +4,24 @@ import net.filonova.project.notes.dao.AdminDao;
 import net.filonova.project.notes.dao.UserDao;
 import net.filonova.project.notes.daoImpl.AdminDaoImpl;
 import net.filonova.project.notes.daoImpl.UserDaoImpl;
+import net.filonova.project.notes.dto.converter.UserDtoMapper;
 import net.filonova.project.notes.dto.request.*;
+import net.filonova.project.notes.dto.response.UserDtoResponse;
+import net.filonova.project.notes.exception.NotesException;
 import net.filonova.project.notes.model.Role;
+import net.filonova.project.notes.model.Session;
 import net.filonova.project.notes.model.User;
-import net.filonova.project.notes.utils.Converter;
+import net.filonova.project.notes.dto.converter.Converter;
 import net.filonova.project.notes.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -27,13 +38,18 @@ public class UserService {
     @Autowired
     private final Validator validator = new Validator();
 
+    @Value("${cookie_name}")
+    private String cookie_name;
+
     public UserService() {
     }
 
-    public User registration(UserRegistrationDtoRequest request) {
-        validator.registrationUser(request);
-        User user = converter.userDtoRequestToUser(request);
-        return userDao.insert(user);
+    public UserDtoResponse registration(UserRegistrationDtoRequest request, HttpServletResponse response) throws NotesException {
+        User user = UserDtoMapper.INSTANCE.userDtoRequestToUser(request);
+        user.setRole(Role.REGULAR);
+        userDao.insert(user);
+        addCookie(user, response);
+        return UserDtoMapper.INSTANCE.userToUserDtoResponse(user);
     }
 
     public void deleteUser(DeleteUserDtoRequest password, int idSession) {
@@ -49,7 +65,7 @@ public class UserService {
 
     public void addRole(int idUser, int idSessionForAdmin) {
         User user = adminDao.getAdminByIdSession(idSessionForAdmin);
-        if(user.getRole() == Role.SUPER){
+        if (user.getRole() == Role.SUPER) {
             adminDao.addRole(idUser);
         }
     }
@@ -92,6 +108,22 @@ public class UserService {
         userDao.deleteIgnoredUser(user.getId(), following.getId());
     }
 
+    private void addCookie(User user, HttpServletResponse httpServletResponse) {
+        Cookie cookie = createCookie();
+
+        insertSession(user, cookie);
+
+        httpServletResponse.addCookie(cookie);
+    }
+
+    private Cookie createCookie() {
+        return new Cookie(cookie_name, UUID.randomUUID().toString());
+    }
+
+    private void insertSession(User user, Cookie cookie) {
+        Session session = new Session(user, cookie.getValue(), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        userDao.insertSession(session);
+    }
 
   /* public List<User> getUsersByRequest(SearchUsersDtoRequest dtoRequest, int idSession) {
         User user = userDao.getByIdSession(idSession);

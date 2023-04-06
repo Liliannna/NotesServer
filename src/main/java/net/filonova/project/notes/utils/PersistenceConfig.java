@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 
 @Configuration
-@MapperScan("net.thumbtack.school.notes.mappers")
+@MapperScan("net.filonova.project.notes.mappers")
 public class PersistenceConfig {
 
     @Value("${jdbc.url}")

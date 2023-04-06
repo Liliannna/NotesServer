@@ -5,7 +5,7 @@ import net.filonova.project.notes.dto.request.LoginDtoRequest;
 import net.filonova.project.notes.dto.response.ErrorDtoResponse;
 import net.filonova.project.notes.model.User;
 import net.filonova.project.notes.service.UserService;
-import net.filonova.project.notes.utils.Converter;
+import net.filonova.project.notes.dto.converter.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -30,7 +30,7 @@ public class SessionsEndpoint {
     @Value("${cookie_name}")
     private String cookie_name;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    /*@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> login(@RequestBody LoginDtoRequest dtoRequest, HttpServletResponse response) {
         try {
             User user = userService.login(dtoRequest);
@@ -52,5 +52,5 @@ public class SessionsEndpoint {
         } catch (NotesException ex) {
             return ResponseEntity.ok(new ErrorDtoResponse(converter.notesExceptionToError(ex)));
         }
-    }
+    }*/
 }

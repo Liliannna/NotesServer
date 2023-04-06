@@ -1,5 +1,6 @@
 package net.filonova.project.notes.dao;
 
+import net.filonova.project.notes.model.Session;
 import net.filonova.project.notes.model.Status;
 import net.filonova.project.notes.model.User;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 public interface UserDao {
     User insert(User user);
+    void insertSession(Session session);
     User update(User user, String actualPassword, int idUserSession);
     void deleteUser(int idUserSession, String password);
     User login(User user);

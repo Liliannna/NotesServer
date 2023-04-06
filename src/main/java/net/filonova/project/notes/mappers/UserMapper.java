@@ -1,17 +1,19 @@
 package net.filonova.project.notes.mappers;
 
+import net.filonova.project.notes.model.Session;
 import net.filonova.project.notes.model.Status;
 import net.filonova.project.notes.model.User;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper
+@Component
 public interface UserMapper {
 
     @Insert("INSERT INTO user (login, password, firstName, lastName, patronymic, datetimeRegistration) " +
-            "VALUES (#{user.login}, #{user.password}, #{user.firstName}, #{user.lastName}, #{user.patronymic}, #{user.datetimeRegistration})")
+            "VALUES (#{user.login}, #{user.password}, #{user.firstName}, #{user.lastName}, #{user.patronymic}, #{user.registration})")
     @Options(useGeneratedKeys = true, keyProperty = "user.id", keyColumn = "id")
     Integer insert(@Param("user") User user);
 
@@ -22,9 +24,9 @@ public interface UserMapper {
     @Update("UPDATE user SET status = 'DELETED' WHERE id IN (SELECT idUser FROM session WHERE id = #{idSession}) AND password = #{password}")
     void deleteUser(int idSession, String password);
 
-    @Insert("INSERT INTO session (idUser) VALUES ((SELECT id FROM user WHERE login = #{user.login} AND password = #{user.password} AND status = 'ACTIVE'))")
-    @Options(useGeneratedKeys = true, keyProperty = "user.idSession", keyColumn = "id")
-    Integer login(@Param("user") User user);
+    @Insert("INSERT INTO session (idUser, token, lastAction) VALUES (#{user.id}, #{token}, #{lastAction}) " +
+            "ON DUPLICATE KEY UPDATE token=#{token}, lastAction=#{lastAction}")
+    Integer login(Session session);
 
     @Delete("DELETE FROM session WHERE id = #{idUserSession}")
     void logout(int idUserSession);

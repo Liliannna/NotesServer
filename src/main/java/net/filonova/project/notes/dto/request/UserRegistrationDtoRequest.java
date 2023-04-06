@@ -1,35 +1,22 @@
 package net.filonova.project.notes.dto.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+import javax.validation.constraints.NotNull;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRegistrationDtoRequest {
 
+    @NotNull(message = "not set")
     private String firstName;
+    @NotNull(message = "not set")
     private String lastName;
     private String patronymic;
+    @NotNull(message = "not set")
     private String login;
+    @NotNull(message = "not set")
     private String password;
-
-    public UserRegistrationDtoRequest() {
-    }
-
-    public UserRegistrationDtoRequest(String firstName, String lastName, String patronymic, String login, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymic = patronymic;
-        this.login = login;
-        this.password = password;
-    }
-
-    public UserRegistrationDtoRequest(String firstName, String lastName, String login, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymic = null;
-        this.login = login;
-        this.password = password;
-    }
 
 }

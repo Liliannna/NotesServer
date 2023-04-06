@@ -4,7 +4,7 @@ import net.filonova.project.notes.exception.NotesException;
 import net.filonova.project.notes.service.UserService;
 import net.filonova.project.notes.dto.request.AddIgnoreOrFollowingDtoRequest;
 import net.filonova.project.notes.dto.response.ErrorDtoResponse;
-import net.filonova.project.notes.utils.Converter;
+import net.filonova.project.notes.dto.converter.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

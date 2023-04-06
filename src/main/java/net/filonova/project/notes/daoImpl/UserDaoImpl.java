@@ -3,6 +3,7 @@ package net.filonova.project.notes.daoImpl;
 import net.filonova.project.notes.exception.NotesErrorCode;
 import net.filonova.project.notes.exception.NotesException;
 import net.filonova.project.notes.dao.UserDao;
+import net.filonova.project.notes.model.Session;
 import net.filonova.project.notes.model.Status;
 import net.filonova.project.notes.model.User;
 import org.apache.ibatis.session.SqlSession;
@@ -16,21 +17,37 @@ import java.util.List;
 public class UserDaoImpl extends DaoImplBase implements UserDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImpl.class);
 
+
     @Override
     public User insert(User user) {
         LOGGER.debug("DAO insert User {}", user);
         try (SqlSession sqlSession = getSession()) {
             try {
                 getUserMapper(sqlSession).insert(user);
-                getUserMapper(sqlSession).login(user);
             } catch (RuntimeException ex) {
                 LOGGER.debug("Can`t insert User {}, {}", user, ex);
                 sqlSession.rollback();
+                System.out.println(ex);
                 throw new NotesException(NotesErrorCode.LOGIN_ALREADY_EXISTS, "Login", "User " + user.getLogin() + " already exists");
             }
             sqlSession.commit();
         }
         return user;
+    }
+
+    @Override
+    public void insertSession(Session session) {
+        LOGGER.debug("DAO insertSession user {}", session.getUser());
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                getUserMapper(sqlSession).login(session);
+            } catch (RuntimeException ex) {
+                LOGGER.debug("Can`t insert session {}, {}", session.getUser(), ex);
+                sqlSession.rollback();
+                throw new NotesException(NotesErrorCode.UNEXPECTED_ERROR, "Error", "Unexpected error");
+            }
+            sqlSession.commit();
+        }
     }
 
     @Override
@@ -69,7 +86,7 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
     @Override
     public User login(User user) {
         LOGGER.debug("DAO login User {}", user);
-        try (SqlSession sqlSession = getSession()) {
+        /*try (SqlSession sqlSession = getSession()) {
             try {
                 getUserMapper(sqlSession).login(user);
             } catch (RuntimeException ex) {
@@ -78,7 +95,7 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
                 throw new NotesException(NotesErrorCode.WRONG_LOGIN_OR_PASSWORD, "Login or password", "That login/password is not valid");
             }
             sqlSession.commit();
-        }
+        }*/
         return user;
     }
 

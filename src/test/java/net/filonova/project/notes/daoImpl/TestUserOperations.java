@@ -1,15 +1,5 @@
 package net.filonova.project.notes.daoImpl;
 
-import net.filonova.project.notes.model.Status;
-import net.filonova.project.notes.model.User;
-import net.filonova.project.notes.utils.Converter;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 public class TestUserOperations extends TestBase {
 
  /*   private final Converter converter = new Converter();
